@@ -1,25 +1,61 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useState, useEffect} from 'react';
+import RecipeList from './RecipeList';
+
 import './App.css';
+import Axios from 'axios';
 
 function App() {
+   
+  const APP_ID = "7b7698c1"
+  const APP_KEY = "6a6dc82d152418d25667420cddce16c8"
+
+  const [ recipes, setRecipes ] = useState([]);
+  const [ search, setSearch ] = useState('');
+  const [ submit, setSubmit ] = useState('chicken')
+
+  useEffect(() => {
+    getRecipe();
+    // eslint-disable-next-line
+  },[submit])
+
+  const getRecipe = () => {
+    Axios.get(`https://api.edamam.com/search?q=${submit}&app_id=${APP_ID}&app_key=${APP_KEY}`)
+    .then( response => {
+        setRecipes(response.data.hits)
+    })
+    .catch( error => {
+      console.log(error)
+    })
+  }
+
+  const getSearch = e => {
+      setSearch(e.target.value)
+  }
+
+  const getSubmit = e => {
+    e.preventDefault()
+    setSubmit(search)
+    setSearch('')
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <ul>
+      <div className="header">A Recipe App made with React.</div>
+    </ul>
+    <form className="form" onSubmit={getSubmit}>
+      <input type="text" placeholder="Search as 'Chicken' " className="bar" value={search} onChange={getSearch} />
+      <button type="submit" className="button" >Search</button>
+    </form>
+    <div className="recipes">
+    {recipes.map(recipe => (
+      <RecipeList
+      key={recipe.recipe.label} 
+      title={recipe.recipe.label} image={recipe.recipe.image} ingredient={recipe.recipe.ingredients} />
+      ))}
     </div>
+    
+     </div>
   );
 }
 
