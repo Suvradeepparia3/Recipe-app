@@ -14,8 +14,8 @@ function RecipeList(props) {
                <h2><b>{props.title}</b></h2>
                 <h4>Ingredients</h4> 
                 <ol>
-                {props.ingredient.map( process => (
-                    <li key={"I dont have a key"}>{process.text}</li>
+                {props.ingredient.map( (process, index) => (
+                    <li key={index}>{process.text}</li>
                 ))}
             </ol>
                </div>

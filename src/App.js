@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import RecipeList from './RecipeList';
-
+import Spinner from 'react-bootstrap/Spinner'
 import './App.css';
 import Axios from 'axios';
 
@@ -11,7 +11,8 @@ function App() {
 
   const [ recipes, setRecipes ] = useState([]);
   const [ search, setSearch ] = useState('');
-  const [ submit, setSubmit ] = useState('chicken')
+  const [ submit, setSubmit ] = useState('Chicken Biryani');
+  const [ loading, setLoading ] = useState(false)
 
   useEffect(() => {
     getRecipe();
@@ -19,9 +20,11 @@ function App() {
   },[submit])
 
   const getRecipe = () => {
+    setLoading(true)
     Axios.get(`https://api.edamam.com/search?q=${submit}&app_id=${APP_ID}&app_key=${APP_KEY}`)
     .then( response => {
         setRecipes(response.data.hits)
+        setLoading(false)
     })
     .catch( error => {
       console.log(error)
@@ -47,14 +50,15 @@ function App() {
       <input type="text" placeholder="Search as 'Chicken' " className="bar" value={search} onChange={getSearch} />
       <button type="submit" className="button" >Search</button>
     </form>
+    {loading ? <Spinner animation="grow" variant="warning" style={{margin: "20% 0% 0% 50%"}} /> : 
     <div className="recipes">
-    {recipes.map(recipe => (
+    {recipes.map((recipe, index) => (
       <RecipeList
-      key={recipe.recipe.label} 
+      key={index} 
       title={recipe.recipe.label} image={recipe.recipe.image} ingredient={recipe.recipe.ingredients} />
       ))}
     </div>
-    
+    }
      </div>
   );
 }
