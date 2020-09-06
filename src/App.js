@@ -53,6 +53,7 @@ function App() {
     {loading ? <Spinner animation="grow" variant="warning" style={{margin: "20% 0% 0% 50%"}} /> : 
     <div className="recipes">
     {recipes.map((recipe, index) => (
+      // content
       <RecipeList
       key={index} 
       title={recipe.recipe.label} image={recipe.recipe.image} ingredient={recipe.recipe.ingredients} />
